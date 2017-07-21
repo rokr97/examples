@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.24'
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.codeborne:selenide:4.5.1'
+    testCompile 'org.testcontainers:selenium:1.4.1'
+}
+
+[compileJava, compileTestJava]*.options.collect {options -> options.encoding = 'UTF-8'}
+[compileJava, compileTestJava]*.options.collect {options -> options.debug = true}
+[compileJava, compileTestJava]*.sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.targetCompatibility = 1.8
+
+test {
+    systemProperties = [
+            'file.encoding': 'UTF-8',
+            'selenide.browser': 'chrome',
+            'webdriver.chrome.driver': System.getProperty('webdriver.chrome.driver')
+    ]
+}
