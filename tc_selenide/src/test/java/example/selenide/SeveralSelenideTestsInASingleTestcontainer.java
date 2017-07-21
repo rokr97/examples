@@ -23,19 +23,15 @@ import static com.codeborne.selenide.Selenide.sleep;
 import static com.codeborne.selenide.Selenide.switchTo;
 
 public class SeveralSelenideTestsInASingleTestcontainer {
-/*
     @ClassRule
     public static BrowserWebDriverContainer container =
             new BrowserWebDriverContainer()
                     .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL, new File("build"))
                     .withDesiredCapabilities(DesiredCapabilities.chrome());
-*/
 
     @BeforeClass
     public static void setupClass() {
-//        WebDriverRunner.setWebDriver(container.getWebDriver());
-//        String chromeDriverPath = System.getenv("webdriver.chrome.driver");
-//        System.setProperty("webdriver.chrome.driver", chromeDriverPath != null ? chromeDriverPath : "c:/tools/chromedriver-2.30/chromedriver.exe");
+        WebDriverRunner.setWebDriver(container.getWebDriver());
     }
 
     @AfterClass
@@ -44,14 +40,14 @@ public class SeveralSelenideTestsInASingleTestcontainer {
     }
 
     @Test
-    public void fail() {
+    public void failGoogleSearch() {
         open("https://google.com/");
         $(By.name("qq")).val("Selenide").pressEnter();
         sleep(1000);
     }
 
     @Test
-    public void search() {
+    public void searchGoogle() {
         open("https://google.com/");
         $(By.name("q")).val("Selenide").pressEnter();
         ElementsCollection results = $$("#ires .g");
@@ -65,7 +61,6 @@ public class SeveralSelenideTestsInASingleTestcontainer {
             SelenideElement link = results.get(i).find("a");
             System.out.println(link.attr("href"));
             link.click();
-//            closeOtherTabs(driver, chromeTab);
             switchTo().window(chromeTab);
         }
         sleep(1000);
@@ -81,7 +76,10 @@ public class SeveralSelenideTestsInASingleTestcontainer {
     }
 
     @Test
-    public void searchAgain() {
-        search();
+    public void searchYandex() {
+        open("https://yandex.ru/");
+        $(By.id("text")).val("Selenide").pressEnter();
+
+        sleep(1000);
     }
 }

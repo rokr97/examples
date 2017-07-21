@@ -1,10 +1,41 @@
-plugins {
-    id 'java'
+apply plugin: 'java'
+apply plugin: 'ru.d10xa.allure'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "ru.d10xa:gradle-allure-plugin:0.5.5"
+    }
 }
+
+defaultTasks 'clean', 'test'
 
 repositories {
     mavenCentral()
     jcenter()
+}
+
+configurations {
+    agent
+}
+
+allure {
+    allureVersion = '1.5.4'
+    aspectjVersion = '1.8.9'
+
+    aspectjweaver = true // run as java agent
+
+    // Choose your test framework.
+    junit = true
+    testNG = false
+    spock = false
+
+    // Choose if you're using Geb for web tests
+    geb = false
+    clean = true
 }
 
 dependencies {
@@ -20,9 +51,23 @@ dependencies {
 [compileJava, compileTestJava]*.targetCompatibility = 1.8
 
 test {
+    useJUnit()
     systemProperties = [
             'file.encoding': 'UTF-8',
             'selenide.browser': 'chrome',
-            'webdriver.chrome.driver': System.getProperty('webdriver.chrome.driver')
+            'webdriver.chrome.driver': System.getenv('webdriver.chrome.driver')
     ]
+}
+
+test.finalizedBy(allureReport)
+
+task openAllure(type: Exec) { //TODO: y u no work on windows?
+    commandLine "allure open ./build/allure-report"
+}
+
+allureReport {
+    from(
+            "$buildDir/allure-results",
+    )
+    to "$buildDir/reports/allure"
 }
